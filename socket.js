@@ -12,8 +12,12 @@ var configure = (server,callback) => {
     io.on('connection', function (socket) {
         socket.on("subscribe", function (viewInfo) {
             if (viewInfo) {
-                socketViewInfo.socketId = socketViewInfo.socketId || {};
-                socketViewInfo.socketId =viewInfo
+                let imei=viewInfo.imei
+                socketViewInfo[imei] = socketViewInfo[imei] || {};
+                socketViewInfo[imei] = {
+                    ...viewInfo,
+                    socketId: socket.id
+                };
                 /*in view info imei , source destination, speed,*/
 
             }
@@ -28,8 +32,8 @@ var configure = (server,callback) => {
             removeSubscription(socket.id);
         })
 
-        socket.on("unsubscribe", _ => {
-            removeSubscription(socket.id);
+        socket.on("unsubscribe", viewInfo => {
+            removeSubscription(viewInfo);
         })
 
     });
@@ -37,14 +41,28 @@ var configure = (server,callback) => {
 
 }
 
-var emitUpdates = (socketId, params) => {
-    io.to(socketId).emit("updateInRow", params);
-}
+var emitUpdates = (imei, params) => {
+    for (var id in socketViewInfo) {
+        let {imei, socketId} = socketViewInfo[id];
+        console.log({imei, socketId});
+        if (imei === imei) {
+            io.to(socketId).emit("updateInRow", params);
+            return;
+        }
+    }
+};
 
 
 
-var removeSubscription = (socketId) => {
-    delete  socketViewInfo.socketId;
+var removeSubscription = (viewInfo) => {
+    for(var  id in socketViewInfo){
+        let {socketId} = socketViewInfo[id];
+        if(viewInfo.imei===socketId){
+            delete  socketViewInfo[viewInfo.imei];
+            return;
+        }
+    }
+
 }
 
 
