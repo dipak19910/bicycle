@@ -48,7 +48,7 @@ function deg2rad(deg) {
     return deg * (Math.PI/180)
 }
 
-export function getTotalTimeTakenAndCalories(distance,speed) {
+export function getTotalTimeTakenAndCalories(distance,speed,calories) {
     if(!speed){
         return;
 
@@ -56,12 +56,16 @@ export function getTotalTimeTakenAndCalories(distance,speed) {
     let time = distance / speed;
     return {
         time,
-        speed,calories:1
+        speed,calories:calories && getBurntCalories(calories)
     }
 }
-
-
-
+export function getBurntCalories({age,weight,heartRate,time,sex}) {
+    if(sex=="m"){
+        return ((age * 0.2017) - (weight * 0.09036) + (heartRate * 0.6309) - 55.0969) * (time / 4184);
+    }else{
+        return ((age * 0.074) - (weight * 0.05741) + (heartRate * 0.4472) - 20.4022) * (time / 4184);
+    }
+}
 
 var isJSONObject = (obj)=> {
     if (obj === undefined || obj === null || obj === true || obj === false || typeof obj !== "object" || Array.isArray(obj)) {

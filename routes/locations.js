@@ -47,7 +47,7 @@ router.all('/distance', (req, res) => {
 });
 
 router.all('/chooseimei', (req, res) => {
-    let {source, destination, speed, imei} = parseRequest(req);
+    let {source, destination, speed, imei,age,sex,weight,heartRate} = parseRequest(req);
     var time = void 0;
     var gps =0;
     let gps_location = readGPSLocation();
@@ -58,7 +58,8 @@ router.all('/chooseimei', (req, res) => {
             clearInterval(time);
             return;
         }
-        let params = getLocation(gpsSource, destination, speed);
+        let oldTime=getLocation(source, gpsSource, speed);
+        let params = getLocation(gpsSource, destination, speed,{age,weight,heartRate,time:oldTime.time,sex});
         if(deepEqual(params.source,destination)){
             clearInterval(time);
             return;
@@ -73,7 +74,6 @@ router.all('/chooseimei', (req, res) => {
                 }
             }
             return mongoUpdate('gps_location', {imei},update, db);
-
         });
         emitUpdates(imei, {
             ...params,
@@ -88,11 +88,11 @@ router.all('/chooseimei', (req, res) => {
 })
 
 
-const getLocation = (source, destination, speed) => {
+const getLocation = (source, destination, speed,calories) => {
     let {lat: sourceLat, lng: sourceLng} = source;
     let {lat: destinationLat, lng: destinationLng} = destination;
     let distanceKm = getDistanceFromLatLonInKm(sourceLat, sourceLng, destinationLat, destinationLng);
-    let timeAndCalories = getTotalTimeTakenAndCalories(distanceKm, speed);
+    let timeAndCalories = getTotalTimeTakenAndCalories(distanceKm, speed,calories);
     return {
         source,
         destination,

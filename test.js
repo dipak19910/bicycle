@@ -85,7 +85,7 @@ function deg2rad(deg) {
 
 // var d = getDistanceFromLatLonInKm(28.6426031, 77.2225618, 23.1354921, 83.1817);
 // console.log("dd>>>>>>>",getTotalTimeTakenAndCalories(d,10))
-
+//http://fitnowtraining.com/2012/01/formula-for-calories-burned/
 /*{ "_id" : ObjectId("59cfe2d0a14ec167b3cc2389"), "location" : { "coordinates" : [ 75.7283467, 29.145307 ], "type" : "Point" }, "name" : "Moti Mahal Restaurant", "imei" : "8f568355b6b1b0903c80d971b50ddc9c754a4d42" }
  */
 function readFile(){
